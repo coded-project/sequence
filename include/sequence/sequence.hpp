@@ -38,6 +38,9 @@ template<typename T>
 class Sequence : public std::vector<T>
 {
 public:
+    using typename std::vector<T>::value_type;
+    using typename std::vector<T>::size_type;
+
     Sequence() = default;
     Sequence(size_type n);
     Sequence(size_type n, value_type const& value);
@@ -117,8 +120,8 @@ template<typename T>
 template<typename U>
 Sequence<T>& Sequence<T>::operator= (Sequence<U> const& rhs)
 {
-    resize( rhs.size() );
-    auto this_element = begin();
+    this->resize( rhs.size() );
+    auto this_element = this->begin();
     for(auto const& rhs_element : rhs)
     {
         *this_element = rhs_element;
@@ -140,7 +143,7 @@ template<typename T>
 template<typename U>
 Sequence<T>& Sequence<T>::operator+= (Sequence<U> const& rhs)
 {
-    auto this_element = begin();
+    auto this_element = this->begin();
     for(auto const& rhs_element : rhs)
     {
         *this_element+=rhs_element;
@@ -162,7 +165,7 @@ template<typename T>
 template<typename U>
 Sequence<T>& Sequence<T>::operator-= (Sequence<U> const& rhs)
 {
-    auto this_element = begin();
+    auto this_element = this->begin();
     for(auto const& rhs_element : rhs)
     {
         *this_element-=rhs_element;
@@ -184,7 +187,7 @@ template<typename T>
 template<typename U>
 Sequence<T>& Sequence<T>::operator*= (Sequence<U> const& rhs)
 {
-    auto this_element = begin();
+    auto this_element = this->begin();
     for(auto const& rhs_element : rhs)
     {
         *this_element*=rhs_element;
@@ -206,7 +209,7 @@ template<typename T>
 template<typename U>
 Sequence<T>& Sequence<T>::operator/= (Sequence<U> const& rhs)
 {
-    auto this_element = begin();
+    auto this_element = this->begin();
     for(auto const& rhs_element : rhs)
     {
         *this_element/=rhs_element;

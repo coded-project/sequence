@@ -10,7 +10,6 @@ class SequenceTest : public ::testing::Test
 {
 };
 
-/*
 TEST_F(SequenceTest, use_as_vector)
 {
     auto seq1 = Sequence<int>();
@@ -49,4 +48,4 @@ TEST_F(SequenceTest, assign_from_another_built_in_type)
         EXPECT_DOUBLE_EQ( *rhs_element, lhs_element );
         ++rhs_element;
     }
-}*/
+}
