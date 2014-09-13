@@ -10,21 +10,34 @@ class SequenceTest : public ::testing::Test
 {
 };
 
-TEST_F(SequenceTest, use_as_vector)
+TEST_F(SequenceTest, default_construct)
 {
-    auto seq1 = Sequence<int>();
+    auto seq = Sequence<int>();
+}
 
-    auto seq2 = Sequence<double>(2);
-    EXPECT_EQ(2, seq2.size());
+TEST_F(SequenceTest, default_fill_constructor)
+{
+    auto seq = Sequence<double>(2);
+    EXPECT_EQ(2, seq.size());
+}
 
-    auto seq3 = Sequence<float>(3, 4.0);
-    EXPECT_DOUBLE_EQ(4.0, seq3.at(2));
+TEST_F(SequenceTest, fille_construtor)
+{
+    auto seq = Sequence<float>(3, 4.0);
+    EXPECT_DOUBLE_EQ(4.0, seq.at(2));
+}
 
-    auto seq4 = Sequence<float>(seq3.begin(), seq3.end());
-    EXPECT_DOUBLE_EQ(4.0, seq4.at(1));
+TEST_F(SequenceTest, range_constructor)
+{
+    auto otherSeq = Sequence<float>(3, 4.0);
+    auto seq = Sequence<float>(otherSeq.begin(), otherSeq.end());
+    EXPECT_DOUBLE_EQ(4.0, seq.at(1));
+}
 
-    auto seq5 = Sequence<int>{1, 2, 3, 4, 5};
-    EXPECT_EQ(5, seq5.back());
+TEST_F(SequenceTest, initialiser_list_contructor)
+{
+    auto seq = Sequence<int>{1, 2, 3, 4, 5};
+    EXPECT_EQ(5, seq.back());
 }
 
 TEST_F(SequenceTest, assign_from_built_in_type)

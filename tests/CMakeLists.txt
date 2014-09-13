@@ -8,6 +8,7 @@ set( sequence_tests_SRC
         sequence_arithmetic_operator_tests.cpp
         sequence_compound_assignment_operator_tests.cpp
         sequence_constructor_tests.cpp
+        sequence_nested_expression_tests.cpp
    )
 
 add_executable( sequence_tests ${sequence_tests_SRC} )
