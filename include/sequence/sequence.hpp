@@ -29,7 +29,7 @@
 
 #include <vector>
 
-#include "global_operators.hpp"
+#include "sequence_expression_templates.hpp"
 
 namespace CodedProject
 {
@@ -45,6 +45,7 @@ public:
     Sequence(size_type n);
     Sequence(size_type n, value_type const& value);
     template<typename InputIterator> Sequence(InputIterator first, InputIterator last);
+    template<typename E> Sequence(SequenceExpression<E> const& expression);
     Sequence(Sequence<T> const& rhs) = default;
     Sequence(Sequence<T> && rhs ); // Damn you VS2013 for not generating move contructors!
     Sequence(std::initializer_list<value_type> list);
@@ -54,6 +55,12 @@ public:
 
     template<typename U> Sequence<T>& operator= (U const& rhs);
     template<typename U> Sequence<T>& operator= (Sequence<U> const& rhs);
+
+    template<typename E> Sequence<T>& operator= (SequenceExpression<E> const& expression);
+    template<typename LHS, typename RHS> Sequence<T>& operator= (SequenceAddition<LHS,RHS> const& expression);
+    template<typename LHS, typename RHS> Sequence<T>& operator= (SequenceSubtraction<LHS,RHS> const& expression);
+    template<typename LHS, typename RHS> Sequence<T>& operator= (SequenceMultiplication<LHS,RHS> const& expression);
+    template<typename LHS, typename RHS> Sequence<T>& operator= (SequenceDivision<LHS,RHS> const& expression);
 
     template<typename U> Sequence<T>& operator+= (U const& rhs);
     template<typename U> Sequence<T>& operator+= (Sequence<U> const& rhs );
@@ -85,6 +92,15 @@ template<typename InputIterator>
 Sequence<T>::Sequence(InputIterator first, InputIterator last) :
     std::vector<T>(first, last)
 {
+}
+
+template<typename T>
+template<typename E> 
+Sequence<T>::Sequence(SequenceExpression<E> const& expression) :
+    std::vector<T>(expression.size())
+{
+    for(size_type i=0; i<this->size(); ++i)
+        (*this)[i] = expression.at(i);
 }
 
 template<typename T>
@@ -127,6 +143,52 @@ Sequence<T>& Sequence<T>::operator= (Sequence<U> const& rhs)
         *this_element = rhs_element;
         ++this_element;
     }
+    return *this;
+}
+
+template<typename T>
+template<typename E>
+Sequence<T>& Sequence<T>::operator= (SequenceExpression<E> const& expression)
+{
+    this->resize(expression.size());
+    for(size_type i=0; i<this->size(); ++i)
+        (*this)[i] = expression.at(i);
+    return *this;
+}
+
+template<typename T>
+template<typename LHS, typename RHS> Sequence<T>& Sequence<T>::operator= (SequenceAddition<LHS,RHS> const& expression)
+{
+    this->resize(expression.size());
+    for(size_type i=0; i<this->size(); ++i)
+        (*this)[i] = expression.at(i);
+    return *this;
+}
+
+template<typename T>
+template<typename LHS, typename RHS> Sequence<T>& Sequence<T>::operator= (SequenceSubtraction<LHS,RHS> const& expression)
+{
+    this->resize(expression.size());
+    for(size_type i=0; i<this->size(); ++i)
+        (*this)[i] = expression.at(i);
+    return *this;
+}
+
+template<typename T>
+template<typename LHS, typename RHS> Sequence<T>& Sequence<T>::operator= (SequenceMultiplication<LHS,RHS> const& expression)
+{
+    this->resize(expression.size());
+    for(size_type i=0; i<this->size(); ++i)
+        (*this)[i] = expression.at(i);
+    return *this;
+}
+
+template<typename T>
+template<typename LHS, typename RHS> Sequence<T>& Sequence<T>::operator= (SequenceDivision<LHS,RHS> const& expression)
+{
+    this->resize(expression.size());
+    for(size_type i=0; i<this->size(); ++i)
+        (*this)[i] = expression.at(i);
     return *this;
 }
 

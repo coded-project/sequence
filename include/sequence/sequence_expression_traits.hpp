@@ -24,35 +24,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef CODEDPROJECT_GLOBAL_OPERATORS_HPP
-#define CODEDPROJECT_GLOBAL_OPERATORS_HPP
+#ifndef CODEDPROJECT_SEQUENCE_EXPRESSION_TRAITS_HPP
+#define CODEDPROJECT_SEQUENCE_EXPRESSION_TRAITS_HPP
 
 namespace CodedProject
 {
 
-template<typename LHS, typename RHS>
-SequenceAddition<LHS,RHS> operator+(LHS const& lhs, RHS const& rhs)
+template<typename T>
+struct SequenceExpressionTraits<Sequence<T>>
 {
-    return SequenceAddition<LHS,RHS>(lhs, rhs);
-}
+    typedef typename std::vector<T>::value_type value_type;
+    typedef typename std::vector<T>::size_type size_type;
+};
 
 template<typename LHS, typename RHS>
-SequenceSubtraction<LHS, RHS> operator-(LHS const& lhs, RHS const& rhs)
+struct SequenceExpressionTraits<SequenceAddition<LHS,RHS>>
 {
-    return SequenceSubtraction<LHS,RHS>(lhs,rhs);
-}
+    typedef typename LHS::value_type value_type;
+    typedef typename LHS::size_type size_type;
+};
 
 template<typename LHS, typename RHS>
-SequenceMultiplication<LHS,RHS> operator*(LHS const& lhs, RHS const& rhs)
+struct SequenceExpressionTraits<SequenceSubtraction<LHS,RHS>>
 {
-    return SequenceMultiplication<LHS,RHS>(lhs,rhs);
-}
+    typedef typename LHS::value_type value_type;
+    typedef typename LHS::size_type size_type;
+};
 
 template<typename LHS, typename RHS>
-SequenceDivision<LHS,RHS> operator/(LHS const& lhs, RHS const& rhs)
+struct SequenceExpressionTraits<SequenceMultiplication<LHS,RHS>>
 {
-    return SequenceDivision<LHS,RHS>(lhs,rhs);
-}
+    typedef typename LHS::value_type value_type;
+    typedef typename LHS::size_type size_type;
+};
+
+template<typename LHS, typename RHS>
+struct SequenceExpressionTraits<SequenceDivision<LHS,RHS>>
+{
+    typedef typename LHS::value_type value_type;
+    typedef typename LHS::size_type size_type;
+};
 
 }
 

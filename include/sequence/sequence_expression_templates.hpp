@@ -24,36 +24,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef CODEDPROJECT_GLOBAL_OPERATORS_HPP
-#define CODEDPROJECT_GLOBAL_OPERATORS_HPP
+#ifndef CODEDPROJECT_SEQUENCE_EXPRESSION_TEMPLATES_HPP
+#define CODEDPROJECT_SEQUENCE_EXPRESSION_TEMPLATES_HPP
 
 namespace CodedProject
 {
 
-template<typename LHS, typename RHS>
-SequenceAddition<LHS,RHS> operator+(LHS const& lhs, RHS const& rhs)
-{
-    return SequenceAddition<LHS,RHS>(lhs, rhs);
-}
+template<typename T>
+class Sequence;
 
-template<typename LHS, typename RHS>
-SequenceSubtraction<LHS, RHS> operator-(LHS const& lhs, RHS const& rhs)
-{
-    return SequenceSubtraction<LHS,RHS>(lhs,rhs);
-}
-
-template<typename LHS, typename RHS>
-SequenceMultiplication<LHS,RHS> operator*(LHS const& lhs, RHS const& rhs)
-{
-    return SequenceMultiplication<LHS,RHS>(lhs,rhs);
-}
-
-template<typename LHS, typename RHS>
-SequenceDivision<LHS,RHS> operator/(LHS const& lhs, RHS const& rhs)
-{
-    return SequenceDivision<LHS,RHS>(lhs,rhs);
-}
+template<typename T>
+struct SequenceExpressionTraits;
 
 }
+
+#include "sequence_expression.hpp"
+#include "sequence_addition.hpp"
+#include "sequence_subtraction.hpp"
+#include "sequence_multiplication.hpp"
+#include "sequence_division.hpp"
+
+#include "sequence_expression_traits.hpp"
+#include "global_operators.hpp"
 
 #endif

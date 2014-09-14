@@ -24,34 +24,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef CODEDPROJECT_GLOBAL_OPERATORS_HPP
-#define CODEDPROJECT_GLOBAL_OPERATORS_HPP
+#ifndef CODEDPROJECT_SEQUENCE_EXPRESSION_HPP
+#define CODEDPROJECT_SEQUENCE_EXPRESSION_HPP
 
 namespace CodedProject
 {
 
-template<typename LHS, typename RHS>
-SequenceAddition<LHS,RHS> operator+(LHS const& lhs, RHS const& rhs)
+template<typename E>
+class SequenceExpression
 {
-    return SequenceAddition<LHS,RHS>(lhs, rhs);
+public:
+    typedef typename SequenceExpressionTraits<E>::value_type value_type;
+    typedef typename SequenceExpressionTraits<E>::size_type size_type;
+
+    size_type size() const;
+    value_type at(size_type i) const;
+    operator E const& () const;
+};
+
+template<typename E>
+typename SequenceExpression<E>::size_type SequenceExpression<E>::size() const
+{
+    return static_cast<E const&>(*this).size();
 }
 
-template<typename LHS, typename RHS>
-SequenceSubtraction<LHS, RHS> operator-(LHS const& lhs, RHS const& rhs)
+template<typename E>
+typename SequenceExpression<E>::value_type SequenceExpression<E>::at(size_type i) const
 {
-    return SequenceSubtraction<LHS,RHS>(lhs,rhs);
+    return static_cast<E const&>(*this).at(i);
 }
 
-template<typename LHS, typename RHS>
-SequenceMultiplication<LHS,RHS> operator*(LHS const& lhs, RHS const& rhs)
+template<typename E>
+SequenceExpression<E>::operator E const&() const
 {
-    return SequenceMultiplication<LHS,RHS>(lhs,rhs);
-}
-
-template<typename LHS, typename RHS>
-SequenceDivision<LHS,RHS> operator/(LHS const& lhs, RHS const& rhs)
-{
-    return SequenceDivision<LHS,RHS>(lhs,rhs);
+    return static_cast<E const&>(*this);
 }
 
 }

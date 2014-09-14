@@ -24,34 +24,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef CODEDPROJECT_GLOBAL_OPERATORS_HPP
-#define CODEDPROJECT_GLOBAL_OPERATORS_HPP
+#ifndef CODEDPROJECT_SEQUENCE_ADDITION_HPP
+#define CODEDPROJECT_SEQUENCE_ADDITION_HPP
 
 namespace CodedProject
 {
 
 template<typename LHS, typename RHS>
-SequenceAddition<LHS,RHS> operator+(LHS const& lhs, RHS const& rhs)
+class SequenceAddition : public SequenceExpression<SequenceAddition<LHS,RHS>>
 {
-    return SequenceAddition<LHS,RHS>(lhs, rhs);
+    LHS const& lhs_;
+    RHS const& rhs_;
+public:
+    typedef typename SequenceExpressionTraits<SequenceAddition<LHS,RHS>>::value_type value_type;
+    typedef typename SequenceExpressionTraits<SequenceAddition<LHS,RHS>>::size_type size_type;
+
+    SequenceAddition(LHS const& lhs, RHS const& rhs);
+
+    size_type size() const;
+    value_type at(size_type i) const;
+};
+
+template<typename LHS, typename RHS>
+SequenceAddition<LHS,RHS>::SequenceAddition(LHS const& lhs, RHS const& rhs) :
+    lhs_(lhs),
+    rhs_(rhs)
+{
+    assert(lhs_.size()==rhs_.size());
 }
 
 template<typename LHS, typename RHS>
-SequenceSubtraction<LHS, RHS> operator-(LHS const& lhs, RHS const& rhs)
+typename SequenceAddition<LHS,RHS>::size_type SequenceAddition<LHS,RHS>::size() const
 {
-    return SequenceSubtraction<LHS,RHS>(lhs,rhs);
+    return lhs_.size();
 }
 
 template<typename LHS, typename RHS>
-SequenceMultiplication<LHS,RHS> operator*(LHS const& lhs, RHS const& rhs)
+typename SequenceAddition<LHS,RHS>::value_type SequenceAddition<LHS,RHS>::at(size_type i) const
 {
-    return SequenceMultiplication<LHS,RHS>(lhs,rhs);
-}
-
-template<typename LHS, typename RHS>
-SequenceDivision<LHS,RHS> operator/(LHS const& lhs, RHS const& rhs)
-{
-    return SequenceDivision<LHS,RHS>(lhs,rhs);
+    return lhs_.at(i) + rhs_.at(i);
 }
 
 }
