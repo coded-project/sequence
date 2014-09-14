@@ -39,10 +39,7 @@ struct SequenceExpressionTraits;
 }
 
 #include "sequence_expression.hpp"
-#include "sequence_addition.hpp"
-#include "sequence_subtraction.hpp"
-#include "sequence_multiplication.hpp"
-#include "sequence_division.hpp"
+#include "sequence_binary_expression.hpp"
 
 #include "sequence_expression_traits.hpp"
 #include "global_operators.hpp"

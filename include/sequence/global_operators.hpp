@@ -31,27 +31,31 @@ namespace CodedProject
 {
 
 template<typename LHS, typename RHS>
-SequenceAddition<LHS,RHS> operator+(LHS const& lhs, RHS const& rhs)
+SequenceBinaryExpression<LHS,RHS,std::plus<typename RHS::value_type>>
+    operator+(LHS const& lhs, RHS const& rhs)
 {
-    return SequenceAddition<LHS,RHS>(lhs, rhs);
+    return SequenceBinaryExpression<LHS,RHS,std::plus<typename LHS::value_type>>(lhs,rhs);
 }
 
 template<typename LHS, typename RHS>
-SequenceSubtraction<LHS, RHS> operator-(LHS const& lhs, RHS const& rhs)
+SequenceBinaryExpression<LHS,RHS,std::minus<typename RHS::value_type>>
+    operator-(LHS const& lhs, RHS const& rhs)
 {
-    return SequenceSubtraction<LHS,RHS>(lhs,rhs);
+    return SequenceBinaryExpression<LHS,RHS,std::minus<typename LHS::value_type>>(lhs,rhs);
 }
 
 template<typename LHS, typename RHS>
-SequenceMultiplication<LHS,RHS> operator*(LHS const& lhs, RHS const& rhs)
+SequenceBinaryExpression<LHS,RHS,std::multiplies<typename RHS::value_type>>
+    operator*(LHS const& lhs, RHS const& rhs)
 {
-    return SequenceMultiplication<LHS,RHS>(lhs,rhs);
+    return SequenceBinaryExpression<LHS,RHS,std::multiplies<typename LHS::value_type>>(lhs,rhs);
 }
 
 template<typename LHS, typename RHS>
-SequenceDivision<LHS,RHS> operator/(LHS const& lhs, RHS const& rhs)
+SequenceBinaryExpression<LHS,RHS,std::divides<typename RHS::value_type>>
+    operator/(LHS const& lhs, RHS const& rhs)
 {
-    return SequenceDivision<LHS,RHS>(lhs,rhs);
+    return SequenceBinaryExpression<LHS,RHS,std::divides<typename LHS::value_type>>(lhs,rhs);
 }
 
 }

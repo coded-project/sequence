@@ -56,11 +56,17 @@ public:
     template<typename U> Sequence<T>& operator= (U const& rhs);
     template<typename U> Sequence<T>& operator= (Sequence<U> const& rhs);
 
+    /* With generic assignment the conversion from each of the SequenceExpression
+       types must be done 'manually' since the generic operator= will be preferred
+       over the one taking a sequence... This causes all sorts of headaches;
+       (Namely that extra overloads will need to be added to the compound-assignment
+        operators in order to allow them to be used with expression templates!)
+       unless there's a clever way of disabling generic assignment for certain
+       types - See next version (v0.4) for how this is solved!
+     */
     template<typename E> Sequence<T>& operator= (SequenceExpression<E> const& expression);
-    template<typename LHS, typename RHS> Sequence<T>& operator= (SequenceAddition<LHS,RHS> const& expression);
-    template<typename LHS, typename RHS> Sequence<T>& operator= (SequenceSubtraction<LHS,RHS> const& expression);
-    template<typename LHS, typename RHS> Sequence<T>& operator= (SequenceMultiplication<LHS,RHS> const& expression);
-    template<typename LHS, typename RHS> Sequence<T>& operator= (SequenceDivision<LHS,RHS> const& expression);
+    template<typename LHS, typename RHS, typename OperationType>
+        Sequence<T>& operator= (SequenceBinaryExpression<LHS,RHS,OperationType> const& rhs);
 
     template<typename U> Sequence<T>& operator+= (U const& rhs);
     template<typename U> Sequence<T>& operator+= (Sequence<U> const& rhs );
@@ -157,38 +163,12 @@ Sequence<T>& Sequence<T>::operator= (SequenceExpression<E> const& expression)
 }
 
 template<typename T>
-template<typename LHS, typename RHS> Sequence<T>& Sequence<T>::operator= (SequenceAddition<LHS,RHS> const& expression)
+template<typename LHS, typename RHS, typename OperationType>
+Sequence<T>& Sequence<T>::operator= (SequenceBinaryExpression<LHS,RHS,OperationType> const& rhs)
 {
-    this->resize(expression.size());
+    this->resize(rhs.size());
     for(size_type i=0; i<this->size(); ++i)
-        (*this)[i] = expression.at(i);
-    return *this;
-}
-
-template<typename T>
-template<typename LHS, typename RHS> Sequence<T>& Sequence<T>::operator= (SequenceSubtraction<LHS,RHS> const& expression)
-{
-    this->resize(expression.size());
-    for(size_type i=0; i<this->size(); ++i)
-        (*this)[i] = expression.at(i);
-    return *this;
-}
-
-template<typename T>
-template<typename LHS, typename RHS> Sequence<T>& Sequence<T>::operator= (SequenceMultiplication<LHS,RHS> const& expression)
-{
-    this->resize(expression.size());
-    for(size_type i=0; i<this->size(); ++i)
-        (*this)[i] = expression.at(i);
-    return *this;
-}
-
-template<typename T>
-template<typename LHS, typename RHS> Sequence<T>& Sequence<T>::operator= (SequenceDivision<LHS,RHS> const& expression)
-{
-    this->resize(expression.size());
-    for(size_type i=0; i<this->size(); ++i)
-        (*this)[i] = expression.at(i);
+        (*this)[i] = rhs.at(i);
     return *this;
 }
 

@@ -37,29 +37,8 @@ struct SequenceExpressionTraits<Sequence<T>>
     typedef typename std::vector<T>::size_type size_type;
 };
 
-template<typename LHS, typename RHS>
-struct SequenceExpressionTraits<SequenceAddition<LHS,RHS>>
-{
-    typedef typename LHS::value_type value_type;
-    typedef typename LHS::size_type size_type;
-};
-
-template<typename LHS, typename RHS>
-struct SequenceExpressionTraits<SequenceSubtraction<LHS,RHS>>
-{
-    typedef typename LHS::value_type value_type;
-    typedef typename LHS::size_type size_type;
-};
-
-template<typename LHS, typename RHS>
-struct SequenceExpressionTraits<SequenceMultiplication<LHS,RHS>>
-{
-    typedef typename LHS::value_type value_type;
-    typedef typename LHS::size_type size_type;
-};
-
-template<typename LHS, typename RHS>
-struct SequenceExpressionTraits<SequenceDivision<LHS,RHS>>
+template<typename LHS, typename RHS, typename OperationType>
+struct SequenceExpressionTraits<SequenceBinaryExpression<LHS,RHS,OperationType>>
 {
     typedef typename LHS::value_type value_type;
     typedef typename LHS::size_type size_type;
