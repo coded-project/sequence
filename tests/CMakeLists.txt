@@ -6,6 +6,7 @@ include_directories( ${sequence_INCLUDE_DIR} ${GTEST_INCLUDE_DIRS} )
 
 set( sequence_tests_SRC
         sequence_arithmetic_operator_tests.cpp
+        sequence_assignment_operator_tests.cpp
         sequence_compound_assignment_operator_tests.cpp
         sequence_constructor_tests.cpp
         sequence_nested_expression_tests.cpp

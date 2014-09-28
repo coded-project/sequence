@@ -73,7 +73,26 @@ TEST_F(TEST_FIXTURE_NAME, sequence_type)
     }
 
     lhs COMPOUND_ASSIGNMENT_OPERATOR rhs;
-    EXPECT_EQ( expected, lhs );
+    EXPECT_EQ(expected, lhs);
+}
+
+TEST_F(TEST_FIXTURE_NAME, sequence_binary_expression)
+{
+    auto lhs = Sequence<int>{10, 21, 24, 35};
+    auto rhs1 = Sequence<int>{1,2,1,2} ;
+    auto rhs2 = Sequence<int>{1,1,3,3};
+    auto rhs_sequence_binary_expression = rhs1 + rhs2;
+
+    auto expected = lhs;
+    auto i=0;
+    for( auto& expected_element : expected)
+    {
+        expected_element COMPOUND_ASSIGNMENT_OPERATOR rhs_sequence_binary_expression.at(i);
+        ++i;
+    }
+
+    lhs COMPOUND_ASSIGNMENT_OPERATOR rhs_sequence_binary_expression;
+    EXPECT_EQ(expected, lhs);
 }
 
 #endif

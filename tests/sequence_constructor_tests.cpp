@@ -66,25 +66,12 @@ TEST_F(SequenceTest, initialiser_list_contructor)
     EXPECT_EQ(5, seq.back());
 }
 
-TEST_F(SequenceTest, assign_from_built_in_type)
+TEST_F(SequenceTest, file_this_use_case_as_a_bug)
 {
-    auto sequence = Sequence<int>(3);
-    sequence = 10;
-    EXPECT_EQ(3, sequence.size());
-    for(auto const& element : sequence)
-        EXPECT_EQ(10, element);
-}
-
-TEST_F(SequenceTest, assign_from_another_built_in_type)
-{
-    auto lhs = Sequence<short>{10, 20, 30, 40};
-    auto rhs = Sequence<int>{1, 2, 3, 4, 5};
-    lhs = rhs;
-    ASSERT_EQ(rhs.size(), lhs.size());
-    auto rhs_element = rhs.begin();
-    for(auto const& lhs_element : lhs)
-    {
-        EXPECT_DOUBLE_EQ( *rhs_element, lhs_element );
-        ++rhs_element;
-    }
+    // This needs filling as a bug... It will fail!
+    // Because references are stored within SeqencBinaryExpression, they will be invalid
+    // at the time of evaluation when the expression is constructed with temporaries...
+    // ... Not really sure how (or even if!) this can be fixed.
+    auto rhs_sequence_binary_expression = Sequence<int>{1,2,1,2} + Sequence<int>{1,1,3,3};
+    rhs_sequence_binary_expression.at(0);
 }

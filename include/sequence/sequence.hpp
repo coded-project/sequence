@@ -36,11 +36,13 @@ namespace CodedProject
 {
 
 template<typename T>
-class Sequence : public std::vector<T>
+class Sequence : public std::vector<T>, public SequenceExpression<Sequence<T>>
 {
 public:
     using typename std::vector<T>::value_type;
     using typename std::vector<T>::size_type;
+    using std::vector<T>::size;
+    using std::vector<T>::at;
 
     Sequence() = default;
     Sequence(size_type n);
@@ -50,36 +52,50 @@ public:
     Sequence(Sequence<T> const& rhs) = default;
     Sequence(Sequence<T> && rhs ); // Damn you VS2013 for not generating move contructors!
     Sequence(std::initializer_list<value_type> list);
-    Sequence<T>& operator= (Sequence<T> const& rhs) = default;
-    Sequence<T>& operator= (Sequence<T> && rhs );
+    Sequence<T>& operator=(Sequence<T> const& rhs) = default;
+    Sequence<T>& operator=(Sequence<T> && rhs );
     ~Sequence() = default;
 
-    template<typename U> Sequence<T>& operator= (U const& rhs);
-    template<typename U> Sequence<T>& operator= (Sequence<U> const& rhs);
+    template<typename U> 
+    typename std::enable_if<!SequenceExpressionTraits<U>::is_sequence, Sequence<T>&>::type
+        operator=(U const& rhs);
+    template<typename U> Sequence<T>& operator=(Sequence<U> const& rhs);
 
-    /* With generic assignment the conversion from each of the SequenceExpression
-       types must be done 'manually' since the generic operator= will be preferred
-       over the one taking a sequence... This causes all sorts of headaches;
-       (Namely that extra overloads will need to be added to the compound-assignment
-        operators in order to allow them to be used with expression templates!)
-       unless there's a clever way of disabling generic assignment for certain
-       types - See next version (v0.4) for how this is solved!
+
+    /* Unfortunately, overloads for all assignments which take the same
+     * sequence type (Sequence<T>) are required in order to allow assignement
+     * (or compound assignement) from a SequenceExpression type.
+     * (Without it the conversion from SequenceExpression<Sequence<T>> to
+     * Sequence<U> requires two conversions; hence overload resolution fails!)
+     *
+     * Not sure how to fix this one yet... However, because I'm sure there is a
+     * solution (i.e. a way to remove the extra overload) I have just duplicated
+     * the code in the appropriate functions...
+     * - neurotempest 28/9/14
      */
-    template<typename E> Sequence<T>& operator= (SequenceExpression<E> const& expression);
-    template<typename LHS, typename RHS, typename OperationType>
-        Sequence<T>& operator= (SequenceBinaryExpression<LHS,RHS,OperationType> const& rhs);
+    template<typename U>
+    typename std::enable_if<!SequenceExpressionTraits<U>::is_sequence, Sequence<T>&>::type
+        operator+=(U const& rhs);
+    Sequence<T>& operator+=(Sequence<T> const& rhs);
+    template<typename U> Sequence<T>& operator+=(Sequence<U> const& rhs);
 
-    template<typename U> Sequence<T>& operator+= (U const& rhs);
-    template<typename U> Sequence<T>& operator+= (Sequence<U> const& rhs );
+    template<typename U>
+    typename std::enable_if<!SequenceExpressionTraits<U>::is_sequence, Sequence<T>&>::type
+        operator-= (U const& rhs);
+    Sequence<T>& operator-=(Sequence<T> const& rhs);
+    template<typename U> Sequence<T>& operator-= (Sequence<U> const& rhs);
 
-    template<typename U> Sequence<T>& operator-= (U const& rhs);
-    template<typename U> Sequence<T>& operator-= (Sequence<U> const& rhs );
+    template<typename U> 
+    typename std::enable_if<!SequenceExpressionTraits<U>::is_sequence, Sequence<T>&>::type
+        operator*= (U const& rhs);
+    Sequence<T>& operator*=(Sequence<T> const& rhs);
+    template<typename U> Sequence<T>& operator*= (Sequence<U> const& rhs);
 
-    template<typename U> Sequence<T>& operator*= (U const& rhs);
-    template<typename U> Sequence<T>& operator*= (Sequence<U> const& rhs );
-
-    template<typename U> Sequence<T>& operator/= (U const& rhs);
-    template<typename U> Sequence<T>& operator/= (Sequence<U> const& rhs );
+    template<typename U>
+    typename std::enable_if<!SequenceExpressionTraits<U>::is_sequence, Sequence<T>&>::type
+        operator/= (U const& rhs);
+    Sequence<T>& operator/=(Sequence<T> const& rhs);
+    template<typename U> Sequence<T>& operator/= (Sequence<U> const& rhs);
 };
 
 template<typename T>
@@ -131,7 +147,8 @@ Sequence<T>& Sequence<T>::operator= (Sequence<T> && rhs )
 
 template<typename T>
 template<typename U>
-Sequence<T>& Sequence<T>::operator= (U const& rhs)
+typename std::enable_if<!SequenceExpressionTraits<U>::is_sequence, Sequence<T>&>::type
+    Sequence<T>::operator= (U const& rhs)
 {
     for(auto& element : *this)
         element = rhs;
@@ -141,7 +158,7 @@ Sequence<T>& Sequence<T>::operator= (U const& rhs)
 
 template<typename T>
 template<typename U>
-Sequence<T>& Sequence<T>::operator= (Sequence<U> const& rhs)
+Sequence<T>& Sequence<T>::operator=(Sequence<U> const& rhs)
 {
     this->resize( rhs.size() );
     auto this_element = this->begin();
@@ -154,28 +171,9 @@ Sequence<T>& Sequence<T>::operator= (Sequence<U> const& rhs)
 }
 
 template<typename T>
-template<typename E>
-Sequence<T>& Sequence<T>::operator= (SequenceExpression<E> const& expression)
-{
-    this->resize(expression.size());
-    for(size_type i=0; i<this->size(); ++i)
-        (*this)[i] = expression.at(i);
-    return *this;
-}
-
-template<typename T>
-template<typename LHS, typename RHS, typename OperationType>
-Sequence<T>& Sequence<T>::operator= (SequenceBinaryExpression<LHS,RHS,OperationType> const& rhs)
-{
-    this->resize(rhs.size());
-    for(size_type i=0; i<this->size(); ++i)
-        (*this)[i] = rhs.at(i);
-    return *this;
-}
-
-template<typename T>
 template<typename U>
-Sequence<T>& Sequence<T>::operator+= (U const& rhs)
+typename std::enable_if<!SequenceExpressionTraits<U>::is_sequence, Sequence<T>&>::type
+    Sequence<T>::operator+=(U const& rhs)
 {
     for(auto& element : *this)
         element+=rhs;
@@ -183,8 +181,7 @@ Sequence<T>& Sequence<T>::operator+= (U const& rhs)
 }
 
 template<typename T>
-template<typename U>
-Sequence<T>& Sequence<T>::operator+= (Sequence<U> const& rhs)
+Sequence<T>& Sequence<T>::operator+=(Sequence<T> const& rhs)
 {
     auto this_element = this->begin();
     for(auto const& rhs_element : rhs)
@@ -197,7 +194,21 @@ Sequence<T>& Sequence<T>::operator+= (Sequence<U> const& rhs)
 
 template<typename T>
 template<typename U>
-Sequence<T>& Sequence<T>::operator-= (U const& rhs)
+Sequence<T>& Sequence<T>::operator+=(Sequence<U> const& rhs)
+{
+    auto this_element = this->begin();
+    for(auto const& rhs_element : rhs)
+    {
+        *this_element+=rhs_element;
+        ++this_element;
+    }
+    return *this;
+}
+
+template<typename T>
+template<typename U>
+typename std::enable_if<!SequenceExpressionTraits<U>::is_sequence, Sequence<T>&>::type
+    Sequence<T>::operator-=(U const& rhs)
 {
     for(auto& element : *this)
         element-=rhs;
@@ -205,8 +216,7 @@ Sequence<T>& Sequence<T>::operator-= (U const& rhs)
 }
 
 template<typename T>
-template<typename U>
-Sequence<T>& Sequence<T>::operator-= (Sequence<U> const& rhs)
+Sequence<T>& Sequence<T>::operator-=(Sequence<T> const& rhs)
 {
     auto this_element = this->begin();
     for(auto const& rhs_element : rhs)
@@ -219,10 +229,36 @@ Sequence<T>& Sequence<T>::operator-= (Sequence<U> const& rhs)
 
 template<typename T>
 template<typename U>
-Sequence<T>& Sequence<T>::operator*= (U const& rhs)
+Sequence<T>& Sequence<T>::operator-=(Sequence<U> const& rhs)
+{
+    auto this_element = this->begin();
+    for(auto const& rhs_element : rhs)
+    {
+        *this_element-=rhs_element;
+        ++this_element;
+    }
+    return *this;
+}
+
+template<typename T>
+template<typename U>
+typename std::enable_if<!SequenceExpressionTraits<U>::is_sequence, Sequence<T>&>::type
+    Sequence<T>::operator*= (U const& rhs)
 {
     for(auto& element : *this)
         element*=rhs;
+    return *this;
+}
+
+template<typename T>
+Sequence<T>& Sequence<T>::operator*=(Sequence<T> const& rhs)
+{
+    auto this_element = this->begin();
+    for(auto const& rhs_element : rhs)
+    {
+        *this_element*=rhs_element;
+        ++this_element;
+    }
     return *this;
 }
 
@@ -241,10 +277,23 @@ Sequence<T>& Sequence<T>::operator*= (Sequence<U> const& rhs)
 
 template<typename T>
 template<typename U>
-Sequence<T>& Sequence<T>::operator/= (U const& rhs)
+typename std::enable_if<!SequenceExpressionTraits<U>::is_sequence, Sequence<T>&>::type
+    Sequence<T>::operator/= (U const& rhs)
 {
     for(auto& element : *this)
         element/=rhs;
+    return *this;
+}
+
+template<typename T>
+Sequence<T>& Sequence<T>::operator/=(Sequence<T> const& rhs)
+{
+    auto this_element = this->begin();
+    for(auto const& rhs_element : rhs)
+    {
+        *this_element/=rhs_element;
+        ++this_element;
+    }
     return *this;
 }
 
