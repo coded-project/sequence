@@ -31,8 +31,22 @@ namespace CodedProject
 {
 
 template<typename T>
+struct SequenceExpressionTraits
+{
+    static bool const is_sequence = std::false_type::value;
+    typedef T value_type;
+    // The size_type of a vector is used here since this will only
+    // be accessed if a non-Sequence is being used as part of a
+    // SequenceExpression (i.e. it will become a sequence).
+    // Therefore we want it's size type to be the same as that of a
+    // Sequence (i.e. a vector's size_type).
+    typedef typename std::vector<T>::size_type size_type;
+};
+
+template<typename T>
 struct SequenceExpressionTraits<Sequence<T>>
 {
+    static bool const is_sequence = std::true_type::value;
     typedef typename std::vector<T>::value_type value_type;
     typedef typename std::vector<T>::size_type size_type;
 };
@@ -40,8 +54,25 @@ struct SequenceExpressionTraits<Sequence<T>>
 template<typename LHS, typename RHS, typename OperationType>
 struct SequenceExpressionTraits<SequenceBinaryExpression<LHS,RHS,OperationType>>
 {
+    static bool const is_sequence = std::true_type::value;
     typedef typename LHS::value_type value_type;
     typedef typename LHS::size_type size_type;
+};
+
+template<typename LHS, typename RHS, typename OperationType>
+struct SequenceExpressionTraits<SequenceBinaryExpressionWithConstantRHS<LHS,RHS,OperationType>>
+{
+    static bool const is_sequence = std::true_type::value;
+    typedef typename LHS::value_type value_type;
+    typedef typename LHS::size_type size_type;
+};
+
+template<typename LHS, typename RHS, typename OperationType>
+struct SequenceExpressionTraits<SequenceBinaryExpressionWithConstantLHS<LHS,RHS,OperationType>>
+{
+    static bool const is_sequence = std::true_type::value;
+    typedef typename RHS::value_type value_type;
+    typedef typename RHS::size_type size_type;
 };
 
 }

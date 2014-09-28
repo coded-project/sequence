@@ -27,6 +27,7 @@
 #ifndef CODEDPROJECT_SEQUENCE_HPP
 #define CODEDPROJECT_SEQUENCE_HPP
 
+#include <type_traits>
 #include <vector>
 
 #include "sequence_expression_templates.hpp"

@@ -131,4 +131,28 @@ TEST_F(TEST_FIXTURE_NAME, assign_expression_result_to_variable)
     EXPECT_EQ(expected, result);
 }
 
+TEST_F(TEST_FIXTURE_NAME, built_in_type_on_RHS)
+{
+    auto seq = Sequence<int>{18, 27, 36, 45};
+    short i = 3;
+    auto expected = seq;
+    for(auto& expected_element : expected)
+        expected_element = expected_element ARITHMETIC_OPERATOR i;
+
+    Sequence<int> result = seq ARITHMETIC_OPERATOR i;
+    EXPECT_EQ( expected, result );
+}
+
+TEST_F(TEST_FIXTURE_NAME, built_in_type_on_LHS)
+{
+    auto seq = Sequence<int>{2, 5, 10, 25};
+    short i = 50;
+    auto expected = seq;
+    for(auto& expected_element : expected)
+        expected_element = i ARITHMETIC_OPERATOR expected_element;
+
+    Sequence<int> result = i ARITHMETIC_OPERATOR seq;
+    EXPECT_EQ( expected, result );
+}
+
 #endif

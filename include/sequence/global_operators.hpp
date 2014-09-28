@@ -31,28 +31,108 @@ namespace CodedProject
 {
 
 template<typename LHS, typename RHS>
-SequenceBinaryExpression<LHS,RHS,std::plus<typename RHS::value_type>>
+typename std::enable_if< !SequenceExpressionTraits<LHS>::is_sequence
+                      && SequenceExpressionTraits<RHS>::is_sequence,
+                         SequenceBinaryExpressionWithConstantLHS<LHS,RHS,std::plus<typename RHS::value_type>> >::type
+    operator+(LHS const& lhs, RHS const& rhs)
+{
+    return SequenceBinaryExpressionWithConstantLHS<LHS,RHS,std::plus<typename RHS::value_type>>(lhs,rhs);
+}
+
+template<typename LHS, typename RHS>
+typename std::enable_if< SequenceExpressionTraits<LHS>::is_sequence
+                      && !SequenceExpressionTraits<RHS>::is_sequence,
+                         SequenceBinaryExpressionWithConstantRHS<LHS,RHS,std::plus<typename LHS::value_type>> >::type
+    operator+(LHS const& lhs, RHS const& rhs)
+{
+    return SequenceBinaryExpressionWithConstantRHS<LHS,RHS,std::plus<typename LHS::value_type>>(lhs,rhs);
+}
+
+template<typename LHS, typename RHS>
+typename std::enable_if< SequenceExpressionTraits<LHS>::is_sequence
+                      && SequenceExpressionTraits<RHS>::is_sequence,
+                         SequenceBinaryExpression<LHS,RHS,std::plus<typename LHS::value_type>> >::type
     operator+(LHS const& lhs, RHS const& rhs)
 {
     return SequenceBinaryExpression<LHS,RHS,std::plus<typename LHS::value_type>>(lhs,rhs);
 }
 
 template<typename LHS, typename RHS>
-SequenceBinaryExpression<LHS,RHS,std::minus<typename RHS::value_type>>
+typename std::enable_if< !SequenceExpressionTraits<LHS>::is_sequence
+                      && SequenceExpressionTraits<RHS>::is_sequence,
+                         SequenceBinaryExpressionWithConstantLHS<LHS,RHS,std::minus<typename RHS::value_type>> >::type
+    operator-(LHS const& lhs, RHS const& rhs)
+{
+    return SequenceBinaryExpressionWithConstantLHS<LHS,RHS,std::minus<typename RHS::value_type>>(lhs,rhs);
+}
+
+template<typename LHS, typename RHS>
+typename std::enable_if< SequenceExpressionTraits<LHS>::is_sequence
+                      && !SequenceExpressionTraits<RHS>::is_sequence,
+                         SequenceBinaryExpressionWithConstantRHS<LHS,RHS,std::minus<typename LHS::value_type>> >::type
+    operator-(LHS const& lhs, RHS const& rhs)
+{
+    return SequenceBinaryExpressionWithConstantRHS<LHS,RHS,std::minus<typename LHS::value_type>>(lhs,rhs);
+}
+
+template<typename LHS, typename RHS>
+typename std::enable_if< SequenceExpressionTraits<LHS>::is_sequence
+                      && SequenceExpressionTraits<RHS>::is_sequence,
+                         SequenceBinaryExpression<LHS,RHS,std::minus<typename LHS::value_type>> >::type
     operator-(LHS const& lhs, RHS const& rhs)
 {
     return SequenceBinaryExpression<LHS,RHS,std::minus<typename LHS::value_type>>(lhs,rhs);
 }
 
 template<typename LHS, typename RHS>
-SequenceBinaryExpression<LHS,RHS,std::multiplies<typename RHS::value_type>>
+typename std::enable_if< !SequenceExpressionTraits<LHS>::is_sequence
+                      && SequenceExpressionTraits<RHS>::is_sequence,
+                         SequenceBinaryExpressionWithConstantLHS<LHS,RHS,std::multiplies<typename RHS::value_type>> >::type
+    operator*(LHS const& lhs, RHS const& rhs)
+{
+    return SequenceBinaryExpressionWithConstantLHS<LHS,RHS,std::multiplies<typename RHS::value_type>>(lhs,rhs);
+}
+
+template<typename LHS, typename RHS>
+typename std::enable_if< SequenceExpressionTraits<LHS>::is_sequence
+                      && !SequenceExpressionTraits<RHS>::is_sequence,
+                         SequenceBinaryExpressionWithConstantRHS<LHS,RHS,std::multiplies<typename LHS::value_type>> >::type
+    operator*(LHS const& lhs, RHS const& rhs)
+{
+    return SequenceBinaryExpressionWithConstantRHS<LHS,RHS,std::multiplies<typename LHS::value_type>>(lhs,rhs);
+}
+
+template<typename LHS, typename RHS>
+typename std::enable_if< SequenceExpressionTraits<LHS>::is_sequence
+                      && SequenceExpressionTraits<RHS>::is_sequence,
+                         SequenceBinaryExpression<LHS,RHS,std::multiplies<typename LHS::value_type>> >::type
     operator*(LHS const& lhs, RHS const& rhs)
 {
     return SequenceBinaryExpression<LHS,RHS,std::multiplies<typename LHS::value_type>>(lhs,rhs);
 }
 
 template<typename LHS, typename RHS>
-SequenceBinaryExpression<LHS,RHS,std::divides<typename RHS::value_type>>
+typename std::enable_if< !SequenceExpressionTraits<LHS>::is_sequence
+                      && SequenceExpressionTraits<RHS>::is_sequence,
+                         SequenceBinaryExpressionWithConstantLHS<LHS,RHS,std::divides<typename RHS::value_type>> >::type
+    operator/(LHS const& lhs, RHS const& rhs)
+{
+    return SequenceBinaryExpressionWithConstantLHS<LHS,RHS,std::divides<typename RHS::value_type>>(lhs,rhs);
+}
+
+template<typename LHS, typename RHS>
+typename std::enable_if< SequenceExpressionTraits<LHS>::is_sequence
+                      && !SequenceExpressionTraits<RHS>::is_sequence,
+                         SequenceBinaryExpressionWithConstantRHS<LHS,RHS,std::divides<typename LHS::value_type>> >::type
+    operator/(LHS const& lhs, RHS const& rhs)
+{
+    return SequenceBinaryExpressionWithConstantRHS<LHS,RHS,std::divides<typename LHS::value_type>>(lhs,rhs);
+}
+
+template<typename LHS, typename RHS>
+typename std::enable_if< SequenceExpressionTraits<LHS>::is_sequence
+                      && SequenceExpressionTraits<RHS>::is_sequence,
+                         SequenceBinaryExpression<LHS,RHS,std::divides<typename LHS::value_type>> >::type
     operator/(LHS const& lhs, RHS const& rhs)
 {
     return SequenceBinaryExpression<LHS,RHS,std::divides<typename LHS::value_type>>(lhs,rhs);

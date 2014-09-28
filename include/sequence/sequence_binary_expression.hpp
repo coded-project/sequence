@@ -40,34 +40,86 @@ public:
     typedef typename SequenceExpressionTraits<SequenceBinaryExpression<LHS,RHS,OperationType>>::value_type value_type;
     typedef typename SequenceExpressionTraits<SequenceBinaryExpression<LHS,RHS,OperationType>>::size_type size_type;
 
-    SequenceBinaryExpression(LHS const& lhs, RHS const& rhs, OperationType const& operation=OperationType());
+    SequenceBinaryExpression(LHS const& lhs,
+                             RHS const& rhs,
+                             OperationType const& operation=OperationType()) :
+        lhs_(lhs),
+        rhs_(rhs),
+        operation_(operation)
+    {
+        assert(lhs_.size()==rhs_.size());
+    }
 
-    size_type size() const;
-    value_type at(size_type i) const;
+    size_type size() const
+    {
+        return lhs_.size();
+    }
+
+    value_type at(size_type i) const
+    {
+        return operation_(lhs_.at(i), rhs_.at(i));
+    }
 };
 
 template<typename LHS, typename RHS, typename OperationType>
-SequenceBinaryExpression<LHS,RHS,OperationType>::SequenceBinaryExpression(LHS const& lhs,
-                                                                          RHS const& rhs,
-                                                                          OperationType const& operation) :
-    lhs_(lhs),
-    rhs_(rhs),
-    operation_(operation)
+class SequenceBinaryExpressionWithConstantRHS : public SequenceExpression<SequenceBinaryExpressionWithConstantRHS<LHS,RHS,OperationType>>
 {
-    assert(lhs_.size()==rhs_.size());
-}
+    LHS const& lhs_;
+    RHS const& rhs_;
+    OperationType const& operation_;
+public:
+    typedef typename SequenceExpressionTraits<SequenceBinaryExpressionWithConstantRHS<LHS,RHS,OperationType>>::value_type value_type;
+    typedef typename SequenceExpressionTraits<SequenceBinaryExpressionWithConstantRHS<LHS,RHS,OperationType>>::size_type size_type;
+
+    SequenceBinaryExpressionWithConstantRHS(LHS const& lhs,
+                                            RHS const& rhs,
+                                            OperationType const& operation=OperationType()) :
+        lhs_(lhs),
+        rhs_(rhs),
+        operation_(operation)
+    {
+    }
+
+    size_type size() const
+    {
+        return lhs_.size();
+    }
+
+    value_type at(size_type i) const
+    {
+        return operation_(lhs_.at(i), rhs_);
+    }
+};
 
 template<typename LHS, typename RHS, typename OperationType>
-typename SequenceBinaryExpression<LHS,RHS,OperationType>::size_type SequenceBinaryExpression<LHS,RHS,OperationType>::size() const
+class SequenceBinaryExpressionWithConstantLHS : public SequenceExpression<SequenceBinaryExpressionWithConstantLHS<LHS,RHS,OperationType>>
 {
-    return lhs_.size();
-}
+    LHS const& lhs_;
+    RHS const& rhs_;
+    OperationType const& operation_;
+public:
+    typedef typename SequenceExpressionTraits<SequenceBinaryExpressionWithConstantLHS<LHS,RHS,OperationType>>::value_type value_type;
+    typedef typename SequenceExpressionTraits<SequenceBinaryExpressionWithConstantLHS<LHS,RHS,OperationType>>::size_type size_type;
 
-template<typename LHS, typename RHS, typename OperationType>
-typename SequenceBinaryExpression<LHS,RHS,OperationType>::value_type SequenceBinaryExpression<LHS,RHS,OperationType>::at(size_type i) const
-{
-    return operation_(lhs_.at(i), rhs_.at(i));
-}
+    SequenceBinaryExpressionWithConstantLHS(LHS const& lhs,
+                                            RHS const& rhs,
+                                            OperationType const& operation=OperationType()) :
+        lhs_(lhs),
+        rhs_(rhs),
+        operation_(operation)
+    {
+    }
+
+    size_type size() const
+    {
+        return rhs_.size();
+    }
+
+    value_type at(size_type i) const
+    {
+        return operation_(lhs_, rhs_.at(i));
+    }
+};
 
 }
 
