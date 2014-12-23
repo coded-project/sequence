@@ -55,24 +55,8 @@ template<typename LHS, typename RHS, typename OperationType>
 struct SequenceExpressionTraits<SequenceBinaryExpression<LHS,RHS,OperationType>>
 {
     static bool const is_sequence = std::true_type::value;
-    typedef typename LHS::value_type value_type;
-    typedef typename LHS::size_type size_type;
-};
-
-template<typename LHS, typename RHS, typename OperationType>
-struct SequenceExpressionTraits<SequenceBinaryExpressionWithConstantRHS<LHS,RHS,OperationType>>
-{
-    static bool const is_sequence = std::true_type::value;
-    typedef typename LHS::value_type value_type;
-    typedef typename LHS::size_type size_type;
-};
-
-template<typename LHS, typename RHS, typename OperationType>
-struct SequenceExpressionTraits<SequenceBinaryExpressionWithConstantLHS<LHS,RHS,OperationType>>
-{
-    static bool const is_sequence = std::true_type::value;
-    typedef typename RHS::value_type value_type;
-    typedef typename RHS::size_type size_type;
+    typedef typename SequenceBinaryExpressionTraits<LHS,RHS>::value_type value_type;
+    typedef typename SequenceBinaryExpressionTraits<LHS,RHS>::size_type size_type;
 };
 
 }

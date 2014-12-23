@@ -27,18 +27,28 @@
 #ifndef CODEDPROJECT_SEQUENCE_BINARY_EXPRESSION_HPP
 #define CODEDPROJECT_SEQUENCE_BINARY_EXPRESSION_HPP
 
+#include "sequence_binary_expression_traits.hpp"
+
 namespace CodedProject
 {
 
+template<typename LHS, typename RHS, typename OperationTypem, typename EnableSpeicialisation=void>
+class SequenceBinaryExpression;
+
 template<typename LHS, typename RHS, typename OperationType>
-class SequenceBinaryExpression : public SequenceExpression<SequenceBinaryExpression<LHS,RHS,OperationType>>
+class SequenceBinaryExpression<LHS,
+                               RHS,
+                               OperationType,
+                               typename std::enable_if< SequenceExpressionTraits<LHS>::is_sequence
+                                                     && SequenceExpressionTraits<RHS>::is_sequence >::type>
+    : public SequenceExpression<SequenceBinaryExpression<LHS,RHS,OperationType>>
 {
     LHS const& lhs_;
     RHS const& rhs_;
     OperationType const& operation_;
 public:
-    typedef typename SequenceExpressionTraits<SequenceBinaryExpression<LHS,RHS,OperationType>>::value_type value_type;
-    typedef typename SequenceExpressionTraits<SequenceBinaryExpression<LHS,RHS,OperationType>>::size_type size_type;
+    typedef typename SequenceBinaryExpressionTraits<LHS,RHS>::value_type value_type;
+    typedef typename SequenceBinaryExpressionTraits<LHS,RHS>::size_type size_type;
 
     SequenceBinaryExpression(LHS const& lhs,
                              RHS const& rhs,
@@ -62,18 +72,23 @@ public:
 };
 
 template<typename LHS, typename RHS, typename OperationType>
-class SequenceBinaryExpressionWithConstantRHS : public SequenceExpression<SequenceBinaryExpressionWithConstantRHS<LHS,RHS,OperationType>>
+class SequenceBinaryExpression<LHS,
+                               RHS,
+                               OperationType,
+                               typename std::enable_if< SequenceExpressionTraits<LHS>::is_sequence
+                                                     && !SequenceExpressionTraits<RHS>::is_sequence >::type>
+    : public SequenceExpression<SequenceBinaryExpression<LHS,RHS,OperationType>>
 {
     LHS const& lhs_;
     RHS const& rhs_;
     OperationType const& operation_;
 public:
-    typedef typename SequenceExpressionTraits<SequenceBinaryExpressionWithConstantRHS<LHS,RHS,OperationType>>::value_type value_type;
-    typedef typename SequenceExpressionTraits<SequenceBinaryExpressionWithConstantRHS<LHS,RHS,OperationType>>::size_type size_type;
+    typedef typename SequenceBinaryExpressionTraits<LHS,RHS>::value_type value_type;
+    typedef typename SequenceBinaryExpressionTraits<LHS,RHS>::size_type size_type;
 
-    SequenceBinaryExpressionWithConstantRHS(LHS const& lhs,
-                                            RHS const& rhs,
-                                            OperationType const& operation=OperationType()) :
+    SequenceBinaryExpression(LHS const& lhs,
+                             RHS const& rhs,
+                             OperationType const& operation=OperationType()) :
         lhs_(lhs),
         rhs_(rhs),
         operation_(operation)
@@ -92,18 +107,23 @@ public:
 };
 
 template<typename LHS, typename RHS, typename OperationType>
-class SequenceBinaryExpressionWithConstantLHS : public SequenceExpression<SequenceBinaryExpressionWithConstantLHS<LHS,RHS,OperationType>>
+class SequenceBinaryExpression<LHS,
+                               RHS,
+                               OperationType,
+                               typename std::enable_if< !SequenceExpressionTraits<LHS>::is_sequence
+                                                     && SequenceExpressionTraits<RHS>::is_sequence >::type>
+    : public SequenceExpression<SequenceBinaryExpression<LHS,RHS,OperationType>>
 {
     LHS const& lhs_;
     RHS const& rhs_;
     OperationType const& operation_;
 public:
-    typedef typename SequenceExpressionTraits<SequenceBinaryExpressionWithConstantLHS<LHS,RHS,OperationType>>::value_type value_type;
-    typedef typename SequenceExpressionTraits<SequenceBinaryExpressionWithConstantLHS<LHS,RHS,OperationType>>::size_type size_type;
+    typedef typename SequenceBinaryExpressionTraits<LHS,RHS>::value_type value_type;
+    typedef typename SequenceBinaryExpressionTraits<LHS,RHS>::size_type size_type;
 
-    SequenceBinaryExpressionWithConstantLHS(LHS const& lhs,
-                                            RHS const& rhs,
-                                            OperationType const& operation=OperationType()) :
+    SequenceBinaryExpression(LHS const& lhs,
+                             RHS const& rhs,
+                             OperationType const& operation=OperationType()) :
         lhs_(lhs),
         rhs_(rhs),
         operation_(operation)

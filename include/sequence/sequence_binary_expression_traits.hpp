@@ -24,39 +24,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef CODEDPROJECT_GLOBAL_OPERATORS_HPP
-#define CODEDPROJECT_GLOBAL_OPERATORS_HPP
+#ifndef CODEDPROJECT_SEQUENCE_BINARY_EXPRESSION_TRAITS_HPP
+#define CODEDPROJECT_SEQUENCE_BINARY_EXPRESSION_TRAITS_HPP
 
 namespace CodedProject
 {
 
-template<typename LHS, typename RHS>
-SequenceBinaryExpression<LHS,RHS,std::plus<typename SequenceBinaryExpressionTraits<LHS,RHS>::value_type>>
-    operator+ (LHS const& lhs, RHS const& rhs)
-{
-    return SequenceBinaryExpression<LHS,RHS,std::plus<typename SequenceBinaryExpressionTraits<LHS,RHS>::value_type>>(lhs,rhs);
-}
+template<typename LHS, typename RHS, typename EnableSpecialisation=void>
+struct SequenceBinaryExpressionTraits;
 
 template<typename LHS, typename RHS>
-SequenceBinaryExpression<LHS,RHS,std::minus<typename SequenceBinaryExpressionTraits<LHS,RHS>::value_type>>
-    operator- (LHS const& lhs, RHS const& rhs)
+struct SequenceBinaryExpressionTraits<LHS,RHS,typename std::enable_if<SequenceExpressionTraits<LHS>::is_sequence>::type>
 {
-    return SequenceBinaryExpression<LHS,RHS,std::minus<typename SequenceBinaryExpressionTraits<LHS,RHS>::value_type>>(lhs,rhs);
-}
+  typedef typename LHS::value_type value_type;
+  typedef typename LHS::size_type size_type;
+};
 
 template<typename LHS, typename RHS>
-SequenceBinaryExpression<LHS,RHS,std::multiplies<typename SequenceBinaryExpressionTraits<LHS,RHS>::value_type>>
-    operator* (LHS const& lhs, RHS const& rhs)
+struct SequenceBinaryExpressionTraits<LHS,RHS,typename std::enable_if<!SequenceExpressionTraits<LHS>::is_sequence>::type>
 {
-    return SequenceBinaryExpression<LHS,RHS,std::multiplies<typename SequenceBinaryExpressionTraits<LHS,RHS>::value_type>>(lhs,rhs);
-}
-
-template<typename LHS, typename RHS>
-SequenceBinaryExpression<LHS,RHS,std::divides<typename SequenceBinaryExpressionTraits<LHS,RHS>::value_type>>
-    operator/ (LHS const& lhs, RHS const& rhs)
-{
-    return SequenceBinaryExpression<LHS,RHS,std::divides<typename SequenceBinaryExpressionTraits<LHS,RHS>::value_type>>(lhs,rhs);
-}
+  typedef typename RHS::value_type value_type;
+  typedef typename RHS::size_type size_type;
+};
 
 }
 

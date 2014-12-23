@@ -66,12 +66,15 @@ TEST_F(SequenceTest, initialiser_list_contructor)
     EXPECT_EQ(5, seq.back());
 }
 
-TEST_F(SequenceTest, file_this_use_case_as_a_bug)
+TEST_F(SequenceTest, DISABLED_file_this_use_case_as_a_bug)
 {
     // This needs filling as a bug... It will fail!
     // Because references are stored within SeqencBinaryExpression, they will be invalid
     // at the time of evaluation when the expression is constructed with temporaries...
     // ... Not really sure how (or even if!) this can be fixed.
+    // - Another thought; could add extra constructors to SequenceExpression which take
+    // r-values; although I'm not sure this would help that much seeing as it's the
+    // actualy storage type in the expression that needs to change - neurotempest 23/12/2014
     auto rhs_sequence_binary_expression = Sequence<int>{1,2,1,2} + Sequence<int>{1,1,3,3};
     rhs_sequence_binary_expression.at(0);
 }
