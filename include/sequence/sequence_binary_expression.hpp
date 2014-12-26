@@ -65,9 +65,14 @@ public:
         return lhs_.size();
     }
 
-    value_type at(size_type i) const
+    value_type at(size_type const i) const
     {
         return operation_(lhs_.at(i), rhs_.at(i));
+    }
+
+    value_type operator[] (size_type const i) const
+    {
+        return operation_(lhs_[i], rhs_[i]);
     }
 };
 
@@ -104,6 +109,11 @@ public:
     {
         return operation_(lhs_.at(i), rhs_);
     }
+
+    value_type operator[] (size_type const i) const
+    {
+        return operation_(lhs_[i], rhs_);
+    }
 };
 
 template<typename LHS, typename RHS, typename OperationType>
@@ -138,6 +148,11 @@ public:
     value_type at(size_type i) const
     {
         return operation_(lhs_, rhs_.at(i));
+    }
+
+    value_type operator[] (size_type const i) const
+    {
+        return operation_(lhs_, rhs_[i]);
     }
 };
 

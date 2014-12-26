@@ -43,6 +43,7 @@ public:
     using typename std::vector<T>::size_type;
     using std::vector<T>::size;
     using std::vector<T>::at;
+    using std::vector<T>::operator[];
 
     Sequence() = default;
     Sequence(size_type n);
@@ -123,7 +124,7 @@ Sequence<T>::Sequence(SequenceExpression<E> const& expression) :
     std::vector<T>(expression.size())
 {
     for(size_type i=0; i<this->size(); ++i)
-        (*this)[i] = expression.at(i);
+        (*this)[i] = expression[i];
 }
 
 template<typename T>

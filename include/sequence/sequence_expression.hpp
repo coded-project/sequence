@@ -39,6 +39,7 @@ public:
 
     size_type size() const;
     value_type at(size_type i) const;
+    value_type operator[] (size_type i) const;
     operator E const& () const;
 };
 
@@ -52,6 +53,12 @@ template<typename E>
 typename SequenceExpression<E>::value_type SequenceExpression<E>::at(size_type i) const
 {
     return static_cast<E const&>(*this).at(i);
+}
+
+template<typename E>
+typename SequenceExpression<E>::value_type SequenceExpression<E>::operator[] (size_type i) const
+{
+  return static_cast<E const&>(*this)[i];
 }
 
 template<typename E>

@@ -66,7 +66,7 @@ TEST_F(SequenceNestedExpressionTest, ternary_expression)
 
 TEST_F(SequenceNestedExpressionTest, very_long_expression)
 {
-    int n = 100000;
+    int n = 10000000;
 
     auto a = Sequence<double>(n, 10);
     auto b = Sequence<double>(n, 10);
